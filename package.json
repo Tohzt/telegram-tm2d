@@ -1,0 +1,24 @@
+{
+  "name": "my-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@grammyjs/conversations": "^1.2.0",
+    "@orbs-network/ton-access": "^2.3.3",
+    "@ton/core": "^0.56.3",
+    "@ton/crypto": "^3.2.0",
+    "@ton/ton": "^13.11.1",
+    "@tonconnect/sdk": "^3.0.2",
+    "grammy": "^1.22.4"
+  }
+}
