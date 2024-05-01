@@ -8,19 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const ton_1 = require("@ton/ton");
 const core_1 = require("@ton/core");
 const grammy_1 = require("grammy");
-const btn_update_msg_1 = __importDefault(require("./components/btn_update_msg"));
-//import  btn_Toggle from "./btn_toggle"
+//import { Menu } from "@grammyjs/menu";
+const menu_1 = require("../examples/menu");
 const conversations_1 = require("@grammyjs/conversations");
 const bot = new grammy_1.Bot("7088202985:AAHjCnM6Qk3GIpJDBYHgLm0LVuiAROp9bKA");
-//bot.use(btn_Toggle)
-bot.use(btn_update_msg_1.default);
+const menu = new menu_1.Menu()
+    .text("What's the time?", (ctx) => ctx.editMessageText("It is " + new Date().toLocaleString()));
+bot.use(menu);
 bot.use((0, grammy_1.session)({ initial() { return {}; } }));
 bot.use((0, conversations_1.conversations)());
 bot.use((0, conversations_1.createConversation)(connect_to_wallet));
@@ -34,7 +32,10 @@ const labels = [
 ];
 //const buttonRows = labels .map((label) => [Keyboard.text(label)]);
 //const keyboard = Keyboard.from(buttonRows).text("yes").text("no").resized();
-const keyboard = new grammy_1.InlineKeyboard().text("on", "on").text("off", "off").row().text("Nahh");
+const keyboard = new grammy_1.InlineKeyboard()
+    .text("on", "on").text("off", "off")
+    .row()
+    .text("Nahh");
 function connect_to_wallet(conversation, ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         yield ctx.reply("Would you like to connect your walled?", { reply_markup: kb });
@@ -69,14 +70,9 @@ function connect_to_wallet(conversation, ctx) {
     });
 }
 ;
-bot.command("time", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.reply("Peep this:", { reply_markup: btn_update_msg_1.default });
+bot.command("menu", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.reply("Peep this:", { reply_markup: menu });
 }));
-/*
-bot.command("toggle", async (ctx) => {
-  await ctx.reply("Toggle: ", { reply_markup: btn_Toggle })
-})
-*/
 bot.command("connect", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.conversation.enter("connect_to_wallet");
 }));

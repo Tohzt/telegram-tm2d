@@ -1,8 +1,8 @@
 import { TonClient, WalletContractV4, internal } from "@ton/ton";
-import { getHttpEndpoint } from "@orbs-network/ton-access"
-import TonConnect from '@tonconnect/sdk';
 import { Address, fromNano } from "@ton/core"
 import { Keyboard, session, SessionFlavor, Context, Bot, InputFile, InlineKeyboard } from "grammy";
+import  btn_UpdateMessage  from "./components/btn_update_msg";
+//import  btn_Toggle from "./btn_toggle"
 import {
   type Conversation,
   type ConversationFlavor,
@@ -10,13 +10,16 @@ import {
   createConversation,
 } from "@grammyjs/conversations";
 
-interface SessionData {
-  testCount: number;
-}
 type MyContext = Context & ConversationFlavor;
 type MyConversation = Conversation<MyContext>;
 
 const bot = new Bot<MyContext>("7088202985:AAHjCnM6Qk3GIpJDBYHgLm0LVuiAROp9bKA");
+
+//bot.use(btn_Toggle)
+bot.use(btn_UpdateMessage)
+bot.use(session({ initial() { return {} } }));
+bot.use(conversations());
+bot.use(createConversation(connect_to_wallet,));
 
 const kb = new InlineKeyboard()
   .text("connect", "connect")
@@ -29,10 +32,7 @@ const labels = [
 ];
 //const buttonRows = labels .map((label) => [Keyboard.text(label)]);
 //const keyboard = Keyboard.from(buttonRows).text("yes").text("no").resized();
-const keyboard = new InlineKeyboard()
-  .text("on", "on").text("off", "off")
-  .row()
-  .text("Nahh")
+const keyboard = new InlineKeyboard() .text("on", "on").text("off", "off") .row() .text("Nahh")
 
 async function connect_to_wallet(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("Would you like to connect your walled?", { reply_markup: kb });
@@ -73,10 +73,16 @@ async function connect_to_wallet(conversation: MyConversation, ctx: MyContext) {
   }
 };
 
+bot.command("time", async (ctx) => {
+  await ctx.reply("Peep this:", { reply_markup: btn_UpdateMessage })
+})
 
-bot.use(session({ initial() { return {} } }));
-bot.use(conversations());
-bot.use(createConversation(connect_to_wallet,));
+/*
+bot.command("toggle", async (ctx) => {
+  await ctx.reply("Toggle: ", { reply_markup: btn_Toggle })
+})
+*/
+
 
 bot.command("connect", async (ctx) => {
   await ctx.conversation.enter("connect_to_wallet");
@@ -103,7 +109,5 @@ bot.on("msg:photo", async (ctx) => {
 bot.callbackQuery("example", async (ctx) => { ctx.reply("confirmed") })
 */
 
-/*
-*/
 
 bot.start();
