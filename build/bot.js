@@ -12,18 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const ton_1 = require("@ton/ton");
-const core_1 = require("@ton/core");
 const grammy_1 = require("grammy");
 const btn_update_msg_1 = __importDefault(require("./components/btn_update_msg"));
-//import  btn_Toggle from "./btn_toggle"
-const conversations_1 = require("@grammyjs/conversations");
+const btn_toggle_1 = __importDefault(require("./components/btn_toggle"));
 const bot = new grammy_1.Bot("7088202985:AAHjCnM6Qk3GIpJDBYHgLm0LVuiAROp9bKA");
-//bot.use(btn_Toggle)
+bot.use(btn_toggle_1.default);
 bot.use(btn_update_msg_1.default);
-bot.use((0, grammy_1.session)({ initial() { return {}; } }));
-bot.use((0, conversations_1.conversations)());
-bot.use((0, conversations_1.createConversation)(connect_to_wallet));
 const kb = new grammy_1.InlineKeyboard()
     .text("connect", "connect")
     .text("cancel", "disconnect");
@@ -34,55 +28,20 @@ const labels = [
 ];
 //const buttonRows = labels .map((label) => [Keyboard.text(label)]);
 //const keyboard = Keyboard.from(buttonRows).text("yes").text("no").resized();
-const keyboard = new grammy_1.InlineKeyboard().text("on", "on").text("off", "off").row().text("Nahh");
-function connect_to_wallet(conversation, ctx) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield ctx.reply("Would you like to connect your walled?", { reply_markup: kb });
-        const { callbackQuery } = yield conversation.waitForCallbackQuery(["connect", "disconnect"]);
-        if (callbackQuery.data == "connect") {
-            yield ctx.reply("Gimme yout wallet");
-            // handle connection logic
-            const { message } = yield conversation.wait();
-            const msg = message === null || message === void 0 ? void 0 : message.text;
-            const addr = core_1.Address.parse(msg);
-            if (core_1.Address.isAddress(addr)) {
-                yield ctx.reply("Woooooo");
-                // Create Client
-                const client = new ton_1.TonClient({
-                    endpoint: 'https://toncenter.com/api/v2/jsonRPC',
-                });
-                // Create wallet contract
-                let workchain = 0; // Usually you need a workchain 0
-                // Get balance
-                let balance = yield client.getBalance(addr);
-                yield ctx.reply((0, core_1.fromNano)(balance));
-                //const connector = new TonConnect();
-                //connector.restoreConnection();
-            }
-        }
-        if (callbackQuery.data == "disconnect") {
-            // handle disconnection logic
-            yield ctx.reply("start", { reply_markup: keyboard });
-            //await ctx.reply("end", { reply_markup: { remove_keyboard: true }, });
-            return yield ctx.reply("Boooo..");
-        }
-    });
-}
-;
+//const keyboard = new InlineKeyboard() .text("on", "on").text("off", "off") .row() .text("Nahh")
+bot.command("test", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.setChatTitle(ctx.match);
+    yield ctx.reply("Test Reply: ", { reply_markup: kb });
+}));
 bot.command("time", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.reply("Peep this:", { reply_markup: btn_update_msg_1.default });
 }));
-/*
-bot.command("toggle", async (ctx) => {
-  await ctx.reply("Toggle: ", { reply_markup: btn_Toggle })
-})
-*/
-bot.command("connect", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.conversation.enter("connect_to_wallet");
+bot.command("toggle", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.reply("Toggle: ", { reply_markup: btn_toggle_1.default });
 }));
-bot.api.setMyCommands([
-    { command: "connect", description: "connect to wallet" }
-]);
+bot.on("msg:text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.reply("the-shed.vercel.app");
+}));
 /*
 // Send Message
 bot.on("msg:text", async (ctx) => {
